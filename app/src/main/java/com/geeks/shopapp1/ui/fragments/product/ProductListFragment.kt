@@ -1,34 +1,42 @@
-package com.geeks.shopapp1.ui.fragments
+package com.geeks.shopapp1.ui.fragments.product
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.geeks.shopapp1.R
 import com.geeks.shopapp1.data.api.RetrofitService
 import com.geeks.shopapp1.databinding.FragmentListBinding
 import com.geeks.shopapp1.ui.adapters.ProductAdapter
+import com.geeks.shopapp1.ui.fragments.product.detail.ListViewModel
+import com.geeks.shopapp1.ui.models.UiState
 import kotlinx.coroutines.launch
 import java.lang.Exception
-import androidx.navigation.fragment.findNavController
-
 
 class ProductListFragment : Fragment() {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: ListViewModel by viewModels ()
 
-    private val adapter = ProductAdapter {product ->
-        product.id?.let { id ->
+    private val adapter = ProductAdapter { product ->
+        val id = product.id
+        if (id != null) {
             openDetail(id)
+        } else {
+            Toast.makeText(requireContext(), "ID продукта = null", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +49,7 @@ class ProductListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecycler()
-        loadProducts()
+        observeState()
     }
 
 
@@ -51,7 +59,7 @@ class ProductListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
     }
 
-    private fun loadProducts() {
+    /*private fun loadProducts() {
         binding.progressBar.isVisible = true
         viewLifecycleOwner.lifecycleScope.launch {
             try {
@@ -63,6 +71,33 @@ class ProductListFragment : Fragment() {
             } finally {
                 _binding?.progressBar?.isVisible = false
             }
+        }
+    }*/
+
+    private fun observeState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                viewModel.state.collect { state ->
+                    when(state){
+                        is UiState.Loaging -> {
+                            binding.progressBar.isVisible = true
+                            binding.recyclerView.isVisible = false
+                        }
+                        is UiState.Succes -> {
+                            binding.progressBar.isVisible = false
+                            binding.recyclerView.isVisible = true
+                            adapter.submitList(state.data)
+                        }
+                        is UiState.Error -> {
+                            binding.progressBar.isVisible = false
+                            binding.recyclerView.isVisible = false
+                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+
+                        }
+                    }
+                }
+            }
+
         }
     }
 

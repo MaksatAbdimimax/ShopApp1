@@ -1,6 +1,6 @@
-package com.geeks.shopapp1.ui.fragments
+package com.geeks.shopapp1.ui.fragments.product.detail
+
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +10,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import coil3.load
 import coil3.request.crossfade
-import com.geeks.shopapp1.R
 import com.geeks.shopapp1.data.api.RetrofitService
 import com.geeks.shopapp1.data.model.ProductDto
 import com.geeks.shopapp1.databinding.FragmentProductDetailBinding
+import com.geeks.shopapp1.ui.models.UiState
 import kotlinx.coroutines.launch
+import androidx.fragment.app.viewModels
 
 class ProductDetailFragment : Fragment() {
 
     private var _binding: FragmentProductDetailBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: DetailViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,22 +36,29 @@ class ProductDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val productId = requireArguments().getInt("product_id")
-        loadProduct(productId)
+        val productId = arguments?.getInt("product_id") ?: return
+        viewModel.loadProduct(productId)
+
+
+        observeViewModel()
     }
 
-    private fun loadProduct(id: Int) {
-        binding.progressBar.isVisible = true
-
+    private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val product = RetrofitService.api.getProductById(id)
-                showProduct(product)
-            } catch (e: Exception) {
-                
-                Toast.makeText(requireContext(), "Ошибка: ${e.message}", Toast.LENGTH_SHORT).show()
-            } finally {
-                binding.progressBar.isVisible = false
+            viewModel.state.collect { state ->
+                when (state) {
+                    is UiState.Loaging -> {
+                        binding.progressBar.isVisible = true
+                    }
+                    is UiState.Succes -> {
+                        binding.progressBar.isVisible = false
+                        showProduct(state.data)
+                    }
+                    is UiState.Error -> {
+                        binding.progressBar.isVisible = false
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
     }
