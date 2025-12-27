@@ -10,19 +10,25 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import coil3.load
 import coil3.request.crossfade
-import com.geeks.shopapp1.data.api.RetrofitService
-import com.geeks.shopapp1.data.model.ProductDto
+
+
+import com.geeks.shopapp1.domain.models.Product
+
 import com.geeks.shopapp1.databinding.FragmentProductDetailBinding
 import com.geeks.shopapp1.ui.models.UiState
 import kotlinx.coroutines.launch
 import androidx.fragment.app.viewModels
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
+
 
 class ProductDetailFragment : Fragment() {
 
     private var _binding: FragmentProductDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: DetailViewModel by viewModels()
+    private val viewModel: DetailViewModel by viewModel()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,7 +69,7 @@ class ProductDetailFragment : Fragment() {
         }
     }
 
-    private fun showProduct(product: ProductDto) {
+    private fun showProduct(product: Product) {
         binding.tvTitle.text = product.title
         binding.tvPrice.text = product.price.toString()
         binding.tvCategory.text = product.description

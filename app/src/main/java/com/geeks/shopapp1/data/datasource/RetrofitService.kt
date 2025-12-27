@@ -1,5 +1,6 @@
-package com.geeks.shopapp1.data.api
+package com.geeks.shopapp1.data.datasource
 
+import com.geeks.shopapp1.data.datasource.StoreApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -8,21 +9,24 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 object RetrofitService {
+
     private const val BASE_URl = "https://fakestoreapi.com/"
 
     private val json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
-        
+
     }
 
-    private val loggingInterseptor = HttpLoggingInterceptor().apply{
+    private val loggingInterseptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
     }
 
+
     private val client = OkHttpClient.Builder()
-        .addInterceptor(loggingInterseptor )
+        .addInterceptor (loggingInterseptor)
         .build()
+
 
     private val contentType = "application/json".toMediaType()
 

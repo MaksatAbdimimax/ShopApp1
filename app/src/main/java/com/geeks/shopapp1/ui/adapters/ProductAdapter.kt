@@ -8,23 +8,24 @@ import coil3.load
 import coil3.request.crossfade
 import com.geeks.shopapp1.data.model.ProductDto
 import com.geeks.shopapp1.databinding.ItemProductBinding
+import com.geeks.shopapp1.domain.models.Product
 
 
 class ProductAdapter(
-    private val onClick: (ProductDto) -> Unit
-) : ListAdapter<ProductDto, ProductAdapter.ProductViewHolder>(ProductDiffUtilCallback()) {
+    private val onClick: (Product) -> Unit
+) : ListAdapter<Product, ProductAdapter.ProductViewHolder>(ProductDiffUtilCallback()) {
 
-    class ProductDiffUtilCallback : DiffUtil.ItemCallback<ProductDto>() {
+    class ProductDiffUtilCallback : DiffUtil.ItemCallback<Product>() {
         override fun areItemsTheSame(
-            oldItem: ProductDto,
-            newItem: ProductDto
+            oldItem: Product,
+            newItem: Product
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: ProductDto,
-            newItem: ProductDto
+            oldItem: Product,
+            newItem: Product
         ): Boolean {
             return oldItem == newItem
         }
@@ -59,7 +60,7 @@ class ProductAdapter(
         private val binding: ItemProductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(product: ProductDto) {
+        fun bind(product: Product) {
 
             with(binding){
                 tvTitle.text = product.title

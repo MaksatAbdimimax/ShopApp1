@@ -19,5 +19,5 @@ data class  ProductDto(
     @SerialName("image")
     val image: String?, // https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png
     @SerialName("rating")
-    val rating: Rating?
+    val rating: RatingDto?
 )

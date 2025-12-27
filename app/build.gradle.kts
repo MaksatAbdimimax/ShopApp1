@@ -69,6 +69,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-kotlinx-serialization:3.0.0")
 
 // 3. Koin (DI)
+    implementation("io.insert-koin:koin-core:4.1.1")//
     implementation("io.insert-koin:koin-android:4.1.1")
 
 // 4. Coil (Картинки)

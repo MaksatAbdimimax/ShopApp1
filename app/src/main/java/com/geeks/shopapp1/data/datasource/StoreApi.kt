@@ -1,4 +1,4 @@
-package com.geeks.shopapp1.data.api
+package com.geeks.shopapp1.data.datasource
 
 import com.geeks.shopapp1.data.model.ProductDto
 import retrofit2.http.GET
