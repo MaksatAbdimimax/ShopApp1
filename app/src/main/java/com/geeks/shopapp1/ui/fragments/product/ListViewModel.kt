@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.geeks.shopapp1.data.model.ProductDto
 import com.geeks.shopapp1.domain.models.Product
+import com.geeks.shopapp1.domain.repository.CartRepository
+import com.geeks.shopapp1.domain.repository.ProductRepository
 import com.geeks.shopapp1.domain.usecases.GetProductUseCase
 import com.geeks.shopapp1.ui.models.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,9 +14,17 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ListViewModel(
-    private val getProductUseCase: GetProductUseCase
+    private val getProductUseCase: GetProductUseCase,
+    private val productRepository: ProductRepository,
+    private val cartRepository: CartRepository
 ) : ViewModel() {
    //private val repasitory = ProductRepository()
+
+    fun addToCart(product: Product) {
+        viewModelScope.launch {
+            cartRepository.addToCart(product)
+        }
+    }
 
     private val  _state = MutableStateFlow<UiState<List<Product>>>(UiState.Loaging)
     val  state : StateFlow<UiState<List<Product>>> = _state.asStateFlow()

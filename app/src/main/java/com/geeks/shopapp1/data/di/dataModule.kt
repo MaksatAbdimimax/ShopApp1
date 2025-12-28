@@ -2,7 +2,9 @@ package com.geeks.shopapp1.data.di
 
 import com.geeks.shopapp1.data.datasource.RetrofitService
 import com.geeks.shopapp1.data.datasource.StoreApi
+import com.geeks.shopapp1.data.repository.CartRepositoryImpl
 import com.geeks.shopapp1.data.repository.ProductRepositoryImpl
+import com.geeks.shopapp1.domain.repository.CartRepository
 import com.geeks.shopapp1.domain.repository.ProductRepository
 
 import kotlinx.serialization.json.Json
@@ -23,6 +25,7 @@ private val json = Json {
 private const val BASE_URl = "https://fakestoreapi.com/"
 
 val dataModule = module {
+
     single {
         json.asConverterFactory(contentType = "application/json".toMediaType())
     }
@@ -57,4 +60,5 @@ val dataModule = module {
     }
 
     single <ProductRepository>{ ProductRepositoryImpl(get()) }
+    single<CartRepository> { CartRepositoryImpl(api = get()) }
 }

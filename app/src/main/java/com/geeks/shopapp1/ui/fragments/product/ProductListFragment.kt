@@ -29,14 +29,14 @@ class ProductListFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: ListViewModel by viewModel ()
 
-    private val adapter = ProductAdapter { product ->
-        val id = product.id
-        if (id != null) {
-            openDetail(id)
-        } else {
-            Toast.makeText(requireContext(), "ID продукта = null", Toast.LENGTH_SHORT).show()
+    private val adapter = ProductAdapter(
+        onClick = { product ->
+            openDetail(product.id)
+        },
+        onAddToCart = { product ->
+            viewModel.addToCart(product)
         }
-    }
+    )
 
 
 
@@ -51,6 +51,9 @@ class ProductListFragment : Fragment() {
 
         setupRecycler()
         observeState()
+        binding.btnCart.setOnClickListener {
+            findNavController().navigate(R.id.action_to_cart)
+        }
     }
 
 
@@ -60,20 +63,7 @@ class ProductListFragment : Fragment() {
         binding.recyclerView.adapter = adapter
     }
 
-    /*private fun loadProducts() {
-        binding.progressBar.isVisible = true
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                val products = RetrofitService.api.getAllProducts()
-                adapter.submitList(products)
-            }catch (e: Exception){
 
-                Toast.makeText(requireContext(), "Oshibka: ${e.message}", Toast.LENGTH_SHORT).show()
-            } finally {
-                _binding?.progressBar?.isVisible = false
-            }
-        }
-    }*/
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -113,10 +103,7 @@ class ProductListFragment : Fragment() {
         }
 
 
-        /*findNavController().navigate(
-            R.id.productDetailFragment,
-            bundle
-        )*/
+
         findNavController().navigate(
             R.id.action_to_detail,
             bundle
