@@ -21,7 +21,7 @@ val uiModule = module {
     }
 
     viewModel {
-        CartViewModel(get())
+        CartViewModel(get(),get(),get(),get())
     }
 }
 

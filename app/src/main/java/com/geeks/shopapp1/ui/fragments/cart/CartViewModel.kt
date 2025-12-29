@@ -3,6 +3,9 @@ package com.geeks.shopapp1.ui.fragments.cart
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.geeks.shopapp1.domain.repository.CartRepository
+import com.geeks.shopapp1.domain.usecases.CheckoutUseCase
+import com.geeks.shopapp1.domain.usecases.ClearCartUseCase
+import com.geeks.shopapp1.domain.usecases.GetCartItemsUseCase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -10,11 +13,15 @@ import kotlinx.coroutines.launch
 ////
 //
 class CartViewModel (
+    private val getCartItemsUseCase: GetCartItemsUseCase,
+    private val checkoutUseCase: CheckoutUseCase,
+    private val clearCartUseCase: ClearCartUseCase,
+
     private val repository: CartRepository
 ): ViewModel() {
 
 
-    val items = repository.cartItems
+    val items = getCartItemsUseCase()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     val total  = items.map { list ->
@@ -27,10 +34,10 @@ class CartViewModel (
 
     fun checout(){
         viewModelScope.launch {
-            val result = repository.checout()
+            val result = checkoutUseCase()
 
             result.onSuccess {
-                repository.clearCart()
+                clearCartUseCase()
             }
         }
     }

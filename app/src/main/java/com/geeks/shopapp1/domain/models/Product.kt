@@ -11,3 +11,4 @@ data class  Product(
     val image: String, // https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_t.png
     val rating: Rating
 )
+
