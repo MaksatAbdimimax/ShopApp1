@@ -69,7 +69,7 @@ class ProductListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.state.collect { state ->
-                    with(binding){
+                    with(binding){ //with binding
                         when(state){
                             is UiState.Loaging -> {
                                 progressBar.isVisible = true
