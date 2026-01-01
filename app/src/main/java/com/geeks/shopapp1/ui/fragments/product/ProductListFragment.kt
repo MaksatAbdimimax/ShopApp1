@@ -69,23 +69,26 @@ class ProductListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
                 viewModel.state.collect { state ->
-                    when(state){
-                        is UiState.Loaging -> {
-                            binding.progressBar.isVisible = true
-                            binding.recyclerView.isVisible = false
-                        }
-                        is UiState.Succes -> {
-                            binding.progressBar.isVisible = false
-                            binding.recyclerView.isVisible = true
-                            adapter.submitList(state.data)
-                        }
-                        is UiState.Error -> {
-                            binding.progressBar.isVisible = false
-                            binding.recyclerView.isVisible = false
-                            Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
+                    with(binding){
+                        when(state){
+                            is UiState.Loaging -> {
+                                progressBar.isVisible = true
+                                recyclerView.isVisible = false
+                            }
+                            is UiState.Succes -> {
+                                progressBar.isVisible = false
+                                recyclerView.isVisible = true
+                                adapter.submitList(state.data)
+                            }
+                            is UiState.Error -> {
+                                progressBar.isVisible = false
+                                recyclerView.isVisible = false
+                                Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
 
+                            }
                         }
                     }
+
                 }
             }
 
